@@ -1,6 +1,7 @@
+import { UsuarioService } from './../../services/usuario.service';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import Swal from 'sweetalert2'
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -16,11 +17,14 @@ export class RegisterComponent implements OnInit {
     email:['',[Validators.required, Validators.email]],
     password:['',Validators.required],
     password2:['',Validators.required],
-    teminos:[false,Validators.required],
+    terminos:[false,Validators.required],
 
+  },{
+    validators: this.passwordIguales('password','password2')
   })
 
-  constructor(private fb:FormBuilder) { }
+  constructor(private fb:FormBuilder,
+              private usuarioServices:UsuarioService) { }
 
   ngOnInit(): void {
   }
@@ -29,13 +33,20 @@ export class RegisterComponent implements OnInit {
     this.formSubmitted=true
     console.log(this.registerForm.value);
 
-    if(this.registerForm.valid){
-      console.log('Posteando formulario');
-
-    }else{
-      console.log('Formulario no es correcto');
-
+    if(!this.registerForm.valid){
+    return;
     }
+
+    //realizar posteo
+    this.usuarioServices.crearUsuario(this.registerForm.value)
+    .subscribe(resp=>{
+      console.log('Usuario creado');
+      console.log(resp);
+    },err =>{
+      //error
+      Swal.fire('Error',err.error.msg,'error')
+
+    })
 
   }
   campoNoValido(campo:string):boolean{
@@ -47,6 +58,31 @@ export class RegisterComponent implements OnInit {
     }
 
 
+  }
+  contrasenasNoValidas(){
+    const pass1 = this.registerForm.get('password')?.value
+    const pass2 = this.registerForm.get('password2')?.value
+
+    if((pass1 !==pass2) && this.formSubmitted){
+      return true
+    }else{
+      return false;
+    }
+  }
+  passwordIguales(pass1:string,pass2:string){
+
+    return (formGroup: FormGroup)=>{
+
+      const pass1Control=formGroup.get(pass1);
+      const pass2Control=formGroup.get(pass2);
+
+      if(pass1Control?.value === pass2Control?.value){
+        pass2Control?.setErrors(null)
+      }else{
+        pass2Control?.setErrors({noEsIgual:true})
+
+      }
+    }
   }
 
   aceptaTerminos(){

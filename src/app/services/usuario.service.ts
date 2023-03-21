@@ -20,11 +20,12 @@ export class UsuarioService {
               private router:Router,
               private ngZone:NgZone) { }
 
-  
+
 
 
   public usuario!:Usuario
-              
+
+
   logout(){
     const email=localStorage.getItem('email')|| '';
     if(!email){
@@ -39,16 +40,16 @@ export class UsuarioService {
         localStorage.removeItem('email');
       })
     }
- 
+
   }
 
 
   validatToken():Observable<boolean>{
-    const token =  localStorage.getItem('token') || ''
+
 
     return this.http.get(`${base_url}/login/renew`,{
       headers:{
-        'x-token':token
+        'x-token':this.token
       }
     }).pipe(
       map((resp:any)=>{
@@ -80,9 +81,18 @@ export class UsuarioService {
     )
   }
 
-  acutalizarPerfil(data:{email:string, nombre:string}){
+  acutalizarPerfil(data:{email:string, nombre:string, role:string}){
+    data={
+      ...data,
+      role: this.usuario.role || ''
+    }
+    console.log(data);
 
-    return this.http.post(`${base_url}/usuarios`,data)
+    return this.http.put(`${base_url}/usuarios/${this.uid}`,data,{
+      headers:{
+        'x-token':this.token
+      }
+    })
 
   }
 
@@ -103,10 +113,19 @@ export class UsuarioService {
     .pipe(
       tap( (resp:any) =>{
         console.log(resp);
-        
+
         localStorage.setItem('token',resp.token)
         localStorage.setItem('email',resp.email)
       })
     )
   }
+
+  get token():string{
+    return localStorage.getItem('token')||''
+  }
+
+  get uid():string{
+    return this.usuario.uid || ''
+  }
+
 }

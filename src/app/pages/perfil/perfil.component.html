@@ -16,16 +16,16 @@
                     <label for="exampleInputEmail1">Email address</label>
                     <div class="input-group">
                         <div class="input-group-addon"><i class="ti-email"></i></div>
-                        <input type="email" class="form-control" formControlName="email" id="exampleInputEmail1" placeholder=" email">
+                        <input type="email" class="form-control" formControlName="email" id="exampleInputEmail1" placeholder=" email" [readonly]="usuario.google">
                     </div>
                 </div>
-               
-                
+
+
                 <button type="submit" class="btn btn-success btn-block waves-effect waves-light m-r-10"
                         [disabled]="perfilForm.invalid">
                     <i class="fa fa-save"></i>
                     Guardar cambios
-                
+
                 </button>
 
             </form>
@@ -38,21 +38,25 @@
         <div class="card-body" aria-autocomplete="none">
             <h4 class="card-title">Avatar</h4>
             <h6 class="card-subtitle">Imagen del usuario</h6>
-            
-            <img src="" alt="">
+          <div class="text-center">
 
-            <input type="file">
+            <img *ngIf="!imgTemp" [src]="usuario.imagenUrl" class="img-avatar" alt="">
+            <img *ngIf="imgTemp"  [src]="imgTemp" class="img-avatar" alt="">
+          </div>
+
+            <input type="file" (change)="cambiarImagen($any($event.target).files[0])">
 
 
             <br>
             <br>
-                
-            <button type="button" class="btn btn-success btn-block  waves-effect waves-light m-r-10">
+
+            <button type="button" class="btn btn-success btn-block  waves-effect waves-light m-r-10"
+            [disabled]="!imagenSubida" (click)="subirImagen()">
                 <i class="fa fa-save"></i>
                 Cambiar imagen
-            
+
             </button>
-            
+
         </div>
     </div>
 </div>

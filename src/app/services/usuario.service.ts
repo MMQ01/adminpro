@@ -5,6 +5,7 @@ import { Injectable, NgZone } from '@angular/core';
 import { RegisterForm } from '../interfaces/register-form.interfaces';
 import { map, tap, Observable, catchError, of } from 'rxjs';
 import { Router } from '@angular/router';
+import { Usuario } from '../models/usuario.model';
 
 declare const google:any
 const base_url=environment.base_URL
@@ -22,17 +23,23 @@ export class UsuarioService {
   
 
 
-
+  public usuario!:Usuario
               
   logout(){
     const email=localStorage.getItem('email')|| '';
-    google.accounts.id.revoke(email,()=> {
-      this.ngZone.run(()=>{
-        this.router.navigateByUrl('/login');
+    if(!email){
+       this.router.navigateByUrl('/login');
+       localStorage.removeItem('token');
+    }else{
+      google.accounts.id.revoke(email,()=> {
+        this.ngZone.run(()=>{
+          this.router.navigateByUrl('/login');
+        })
+        localStorage.removeItem('token');
+        localStorage.removeItem('email');
       })
-      localStorage.removeItem('token');
-      localStorage.removeItem('email');
-    })
+    }
+ 
   }
 
 
@@ -44,10 +51,21 @@ export class UsuarioService {
         'x-token':token
       }
     }).pipe(
-      tap((resp:any)=>{
+      map((resp:any)=>{
+
+        const {
+          nombre,
+          email,
+          img='',
+          google,
+          role,
+          uid
+        }= resp.usuario
+        this.usuario = new Usuario(nombre,email,'',img,google,role,uid)
+
         localStorage.setItem('token',resp.token)
+        return true
       }),
-      map(resp=>true),
       catchError(error=> of(false))
     )
   }
@@ -61,6 +79,15 @@ export class UsuarioService {
       })
     )
   }
+
+  acutalizarPerfil(data:{email:string, nombre:string}){
+
+    return this.http.post(`${base_url}/usuarios`,data)
+
+  }
+
+
+
   login(params:LoginForm){
 
     return this.http.post(`${base_url}/login`,params)

@@ -3,7 +3,7 @@ import { environment } from './../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, NgZone } from '@angular/core';
 import { RegisterForm } from '../interfaces/register-form.interfaces';
-import { map, tap, Observable, catchError, of } from 'rxjs';
+import { map, tap, Observable, catchError, of, delay } from 'rxjs';
 import { Router } from '@angular/router';
 import { Usuario } from '../models/usuario.model';
 
@@ -120,6 +120,34 @@ export class UsuarioService {
     )
   }
 
+  cargarUsuarios(desde:number=0){
+  const url=`${base_url}/usuarios?desde=${desde}`
+
+   return this.http.get(url,this.headers)
+   .pipe(
+     map((resp:any)=>{
+      const usuarios = resp.usuarios.map((user:any)=> new Usuario(user.nombre,user.email,'',user.img,user.google,user.role,user.uid))
+      return {
+        total:resp.total,
+        usuarios
+      };
+     })
+   )
+
+  }
+
+  
+
+  get headers():any{
+    
+    return {
+      headers:{
+        'x-token':this.token
+      }
+    }
+   
+     
+  }
   get token():string{
     return localStorage.getItem('token')||''
   }

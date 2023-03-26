@@ -17,3 +17,11 @@
   width: 200px;
   height: 200px;
 }
+.w100{
+  width: 100px;
+}
+.avatar{
+  border: 1px solid gray;
+  width: 30px;
+  border-radius: 100%;
+}

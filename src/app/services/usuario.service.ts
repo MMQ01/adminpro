@@ -136,6 +136,22 @@ export class UsuarioService {
 
   }
 
+  elimnarUsuario(usuario:Usuario){
+    const url=`${base_url}/usuarios/${usuario.uid}`
+    return this.http.delete(url,this.headers)
+  }
+
+  guardarUsuario(data:Usuario){
+    
+    console.log(data);
+
+    return this.http.put(`${base_url}/usuarios/${data.uid}`,data,{
+      headers:{
+        'x-token':this.token
+      }
+    })
+
+  }
   
 
   get headers():any{

@@ -1,3 +1,4 @@
+import  Swal  from 'sweetalert2';
 import { Component, OnInit } from '@angular/core';
 import { HospitalService } from '../../../services/hospital.service';
 import { Hospital } from '../../../models/hospital.model';
@@ -30,5 +31,21 @@ export class HospitalesComponent implements OnInit {
         this.cargando=false
       }
     )
+  }
+
+  guardarCambios(hospital:Hospital){
+    this.hospitalService.actualizarHospitales(hospital._id,hospital.nombre)
+    .subscribe(resp=>{
+      Swal.fire('Actualizado',hospital.nombre,'success')
+    })
+
+  }
+
+  eliminarHospital(hospital:Hospital){
+    this.hospitalService.borrarHospitales(hospital._id)
+    .subscribe(resp=>{
+      Swal.fire('Borrado',hospital.nombre,'success')
+    })
+
   }
 }

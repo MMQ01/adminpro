@@ -1,5 +1,5 @@
 import  Swal  from 'sweetalert2';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { HospitalService } from '../../../services/hospital.service';
 import { Hospital } from '../../../models/hospital.model';
 import { ModalImagenService } from 'src/app/services/modal-imagen.service';
@@ -13,7 +13,7 @@ import { BuquedasService } from '../../../services/buquedas.service';
   styles: [
   ]
 })
-export class HospitalesComponent implements OnInit {
+export class HospitalesComponent implements OnInit, OnDestroy {
 
   constructor(private hospitalService:HospitalService,
               private modalImagenServices:ModalImagenService,
@@ -31,7 +31,7 @@ export class HospitalesComponent implements OnInit {
    .pipe(
     delay(100)
    )
-   .subscribe(img=> 
+   .subscribe(img=>
     {
       this.cargarHospitales()
     })
@@ -84,7 +84,7 @@ export class HospitalesComponent implements OnInit {
         this.cargarHospitales()
       })
     }
-    
+
   }
 
   abrirModal(hospital:Hospital){
@@ -99,10 +99,14 @@ export class HospitalesComponent implements OnInit {
     this.busquedaServices.buscar('hospitales',termino)
     .subscribe((resp:any)=>{
       console.log(resp);
-      
+
       this.hospitales=resp
       this.cargando=false
     })
 
   }
+
+  ngOnDestroy(): void {
+    this.imgSubs.unsubscribe()
+   }
 }

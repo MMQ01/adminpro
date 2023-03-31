@@ -2,7 +2,8 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <input type="text" class="form-control" placeholder="Buscar hospitales...">
+                <input type="text" class="form-control" placeholder="Buscar hospitales..."
+                        (keyup)="buscar(txtTermino.value)" #txtTermino>
 
             </div>
         </div>
@@ -34,7 +35,7 @@
               </div>
               <div class="col">
                 <div class="text-right">
-                  <button class="btn btn-primary">
+                  <button class="btn btn-primary" (click)="abrirSweetAlert()">
                     <i class="fa fa-hospital-o"></i>
                     Crear hospital
                   </button>
@@ -63,7 +64,8 @@
                                 <td class="text-center">
                                     <img [src]="hospital.img | imagen:'hospitales'"
                                          alt="hospital.nombre"
-                                         class="avatar cursor"></td>
+                                         class="w100 cursor"
+                                         (click)="abrirModal(hospital)"></td>
                                 <td>
                                     <input type="text"
                                             class="form-control"
@@ -75,10 +77,10 @@
 
 
                                 <td class="text-nowrap text-center">
-                                    <a (click)="guardarCambios(hospital)" class="cursor" data-toggle="tooltip" data-original-title="Guardar cambios"> <i
-                                            class="fa fa-pencil text-inverse m-r-10" ></i> </a>
+                                    <a (click)="guardarCambios(hospital)" data-toggle="tooltip" data-original-title="Guardar cambios"> <i
+                                            class="fa fa-pencil text-inverse m-r-10 cursor" ></i> </a>
                                     <a (click)="eliminarHospital(hospital)" data-toggle="tooltip" data-original-title="Borrar"> <i
-                                            class="fa fa-close text-danger"></i> </a>
+                                            class="fa fa-close text-danger cursor"></i> </a>
                                 </td>
                             </tr>
 

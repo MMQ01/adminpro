@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Usuario } from '../models/usuario.model';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs';
+import { Hospital } from '../models/hospital.model';
 
 
 const base_url=environment.base_URL
@@ -23,6 +24,12 @@ export class BuquedasService {
       );
   }
   
+  private transformarHospitales(resultados:any):Hospital[]{
+
+
+    return resultados
+  }
+  
 
 
   buscar( 
@@ -38,6 +45,8 @@ export class BuquedasService {
               switch ( tipo ) {
                 case 'usuarios':
                   return this.transformarUsuario( resp.resultados )
+                case 'hospitales':
+                  return this.transformarHospitales( resp.resultados )
               
                 default:
                   return [];

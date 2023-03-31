@@ -14,6 +14,7 @@ export class ModalImagenService {
   public img?:string
 
   public nuevaImagen:EventEmitter<String> = new EventEmitter<String>()
+  pipe: any;
 
   constructor() { }
 

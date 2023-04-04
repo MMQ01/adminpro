@@ -66,6 +66,11 @@ export class BuquedasService {
 }
 
 
+  busquedaGlobal(termino:string){
+    const url = `${ base_url }/todo/${ termino }`;
+  return this.http.get<any[]>( url, this.headers )
+  }
+
   get headers():any{
 
     return {

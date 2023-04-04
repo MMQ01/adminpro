@@ -38,6 +38,7 @@ export class UsuarioService {
         })
         localStorage.removeItem('token');
         localStorage.removeItem('email');
+        localStorage.removeItem('menu');
       })
     }
 
@@ -64,7 +65,7 @@ export class UsuarioService {
         }= resp.usuario
         this.usuario = new Usuario(nombre,email,'',img,google,role,uid)
 
-        localStorage.setItem('token',resp.token)
+        this.guardarLocalStorage(resp.token,resp.menu)
         return true
       }),
       catchError(error=> of(false))
@@ -76,7 +77,7 @@ export class UsuarioService {
     return this.http.post(`${base_url}/usuarios`,params)
     .pipe(
       tap( (resp:any) =>{
-        localStorage.setItem('token',resp.token)
+        this.guardarLocalStorage(resp.token,resp.menu)
       })
     )
   }
@@ -103,7 +104,7 @@ export class UsuarioService {
     return this.http.post(`${base_url}/login`,params)
     .pipe(
       tap( (resp:any) =>{
-        localStorage.setItem('token',resp.token)
+        this.guardarLocalStorage(resp.token,resp.menu)
       })
     )
   }
@@ -114,7 +115,7 @@ export class UsuarioService {
       tap( (resp:any) =>{
         console.log(resp);
 
-        localStorage.setItem('token',resp.token)
+        this.guardarLocalStorage(resp.token,resp.menu)
         localStorage.setItem('email',resp.email)
       })
     )
@@ -154,6 +155,10 @@ export class UsuarioService {
   }
   
 
+  guardarLocalStorage(token:string, menu:any){
+    localStorage.setItem('token',token)
+    localStorage.setItem('menu', JSON.stringify(menu))
+  }
   get headers():any{
     
     return {
@@ -170,6 +175,10 @@ export class UsuarioService {
 
   get uid():string{
     return this.usuario.uid || ''
+  }
+
+  get role():any{
+    return this.usuario.role
   }
 
 }
